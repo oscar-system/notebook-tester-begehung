@@ -38,7 +38,7 @@ jobs:
       run: pip3 install -r requirements.txt
     - name: "Fetch files"
       run: |
-        echo "::set-output name=filename:$(python3 fetcher.py ${{matrix.node}})""
+        echo "::set-output name=filename::$(python3 fetcher.py ${{matrix.node}})"
         cp -v Project.toml $(julia -e "print(Base.active_project())")
     - name: "Install julia pre-requisites"
       run: |
