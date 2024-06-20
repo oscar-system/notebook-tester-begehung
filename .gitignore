@@ -2,3 +2,6 @@
 *.ipynb
 *.toml
 README.md
+
+#venv
+.venv
