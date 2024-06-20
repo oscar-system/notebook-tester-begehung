@@ -43,6 +43,7 @@ jobs:
         API_ACCESS_TOKEN: ${{secrets.API_ACCESS_TOKEN}}
       run: |
         echo "FILENAME=$(python3 fetcher.py ${{matrix.node}})" >> $GITHUB_ENV
+        mkdir -pv $( julia -e "print(Base.active_project())" | sed 's/\/Project.toml//' )
         cp -v Project.toml $(julia -e "print(Base.active_project())")
     - name: "Install julia pre-requisites"
       run: |
