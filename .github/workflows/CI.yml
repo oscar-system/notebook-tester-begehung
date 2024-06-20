@@ -1,0 +1,59 @@
+name: Run tests
+
+on:
+  push:
+  schedule:
+  - cron: '0 2 * * *'
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}-${{ github.ref != 'refs/heads/master' || github.run_number }}
+  cancel-in-progress: true
+
+jobs:
+  job1:
+    name: "Get tutorials list"
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.set-matrix.outputs.matrix }}
+    steps:
+    - uses: actions/checkout@v4
+    - id: set-matrix
+      run: |
+        echo "::set-output name=matrix::{\"node\":[$(python3 getter.py)]}"
+  job2:
+    needs:
+    - job1
+    name: "Run tests"
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix: ${{fromJSON(needs.job1.outputs.matrix)}}
+    steps:
+    - uses: actions/checkout@v4
+    - name: "Set up Julia"
+      uses: julia-actions/setup-julia@v1
+      with:
+        version: '1.10'
+    - name: "Install Jupyter"
+      run: pip3 install -r requirements.txt
+    - name: "Fetch files"
+      run: |
+        echo "::set-output filename=$(python3 fetcher.py ${{matrix.node}})""
+        cp -v Project.toml $(julia -e "print(Base.active_project())")
+    - name: "Install julia pre-requisites"
+      run: |
+        git clone "https://github.com/oscar-system/Oscar.jl"
+        cd Oscar.jl
+        git checkout backports-release-1.1
+        cd ..
+        julia -e '
+          using Pkg
+          Pkg.add("IJulia")
+          Pkg.develop(path="Oscar.jl")'
+    - run: mkdir -pv notebooks
+    - name: Use default julia environment
+      run: |
+        cat ~/.local/share/jupyter/kernels/julia-1.10/kernel.json | sed 's/^.*project=.*$//' > ~/.local/share/jupyter/kernels/julia-1.10/kernel.json.new
+        mv -v ~/.local/share/jupyter/kernels/julia-1.10/kernel.json.new  ~/.local/share/jupyter/kernels/julia-1.10/kernel.json
+    - name: Run notebooks
+      run: python3 tester.py ${{filename}}
