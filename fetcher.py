@@ -36,11 +36,4 @@ for i in ryaml:
         nbfilename = i["name"]
     grab_file(i["url"], token)
 
-#init julia depot
-os.environ['JULIA_PROJECT'] = os.getcwd()
-subprocess.run('''julia -e "using Pkg; Pkg.instantiate()"''', shell=True, check=True)
-
-#finally run the stuff
-if nbfilename == '':
-    raise AssertionError("cant be empty")
-subprocess.run(f'''jupytext --set-kernel "julia-1.10" --execute {nbfilename}''', shell=True, check=True)
+print(nbfilename)
