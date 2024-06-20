@@ -38,7 +38,7 @@ jobs:
       run: pip3 install -r requirements.txt
     - name: "Fetch files"
       run: |
-        echo "{filename}={$(python3 fetcher.py ${{matrix.node}})}" >> $GITHUB_OUTPUT
+        echo "FILENAME=$(python3 fetcher.py ${{matrix.node}})" >> $GITHUB_ENV
         cp -v Project.toml $(julia -e "print(Base.active_project())")
     - name: "Install julia pre-requisites"
       run: |
@@ -56,4 +56,4 @@ jobs:
         cat ~/.local/share/jupyter/kernels/julia-1.10/kernel.json | sed 's/^.*project=.*$//' > ~/.local/share/jupyter/kernels/julia-1.10/kernel.json.new
         mv -v ~/.local/share/jupyter/kernels/julia-1.10/kernel.json.new  ~/.local/share/jupyter/kernels/julia-1.10/kernel.json
     - name: Run notebooks
-      run: python3 tester.py ${{filename}}
+      run: python3 tester.py $FILENAME
