@@ -12,6 +12,8 @@ concurrency:
 jobs:
   job1:
     name: "Get tutorials list"
+    env:
+      API_ACCESS_TOKEN: ${{secrets.API_ACCESS_TOKEN}}
     runs-on: ubuntu-latest
     outputs:
       matrix: ${{ steps.set-matrix.outputs.matrix }}
