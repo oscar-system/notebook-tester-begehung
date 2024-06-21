@@ -47,13 +47,9 @@ jobs:
         cp -v Project.toml $(julia -e "print(Base.active_project())")
     - name: "Install julia pre-requisites"
       run: |
-        git clone "https://github.com/oscar-system/Oscar.jl"
-        cd Oscar.jl
-        git checkout backports-release-1.1
-        cd ..
         julia -e '
           using Pkg
-          Pkg.develop(path="Oscar.jl")
+          Pkg.add(name="Oscar", version="1.1")
           Pkg.add("IJulia")
           Pkg.add("Revise")'
     - name: Use default julia environment
