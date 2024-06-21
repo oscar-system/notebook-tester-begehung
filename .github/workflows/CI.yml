@@ -54,7 +54,8 @@ jobs:
         julia -e '
           using Pkg
           Pkg.develop(path="Oscar.jl")
-          Pkg.add("IJulia")'
+          Pkg.add("IJulia")
+          Pkg.add("Revise")'
     - name: Use default julia environment
       run: |
         cat ~/.local/share/jupyter/kernels/julia-1.10/kernel.json | sed 's/^.*project=.*$//' > ~/.local/share/jupyter/kernels/julia-1.10/kernel.json.new
