@@ -14,8 +14,11 @@ def grab_file(filelink, token):
     fyaml = r.content.decode()
     fyaml = yaml.safe_load(fyaml)
     if fyaml["name"].endswith("png"):
+        imgstring = fyaml["content"]
+        imgstring = imgstring.replace('\n', '')
+        imgbytes = bytes(imgstring, "ascii")
         with open(fyaml["name"], "wb") as writefile:
-            writefile.write(base64.decodebytes(fyaml['content']))
+            writefile.write(base64.decodebytes(imgbytes))
     else:
         with open(fyaml["name"], 'w') as writefile:
             writefile.write(base64.b64decode(fyaml['content']).decode('utf8'))
