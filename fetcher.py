@@ -13,8 +13,12 @@ def grab_file(filelink, token):
     #print(r.content.decode('ascii'))
     fyaml = r.content.decode()
     fyaml = yaml.safe_load(fyaml)
-    with open(fyaml["name"], 'w') as writefile:
-        writefile.write(base64.b64decode(fyaml['content']).decode('utf8'))
+    if fyaml["name"].endswith("png"):
+        with open(fyaml["name"], "wb") as writefile:
+            writefile.write(base64.decodebytes(fyaml['content']))
+    else:
+        with open(fyaml["name"], 'w') as writefile:
+            writefile.write(base64.b64decode(fyaml['content']).decode('utf8'))
 
 
 name = sys.argv[1]

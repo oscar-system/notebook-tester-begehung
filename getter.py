@@ -20,8 +20,20 @@ outstring = ""
 
 for i in fyamlcontent:
     if i["type"] == "dir":
+        if i["name"] == "book":
+        # handle book things later
+            continue
         outstring += f"""'{i["name"]} {i["url"]}', """
-        # just send the URL to tester.py
+
+#book things
+url = '''https://api.github.com/repos/oscar-system/notebooks/contents/book'''
+r = requests.get(url=url, headers=headers)
+fyaml = r.content.decode('ascii')
+fyamlcontent = yaml.safe_load(fyaml)
+
+for i in fyamlcontent:
+    if i["type"] == "dir":
+        outstring += f"""'book-{i["name"]} {i["url"]}', """
 
 outstring = outstring[0:-2]
 print(outstring)
