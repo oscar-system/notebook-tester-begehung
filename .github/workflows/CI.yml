@@ -45,7 +45,8 @@ jobs:
       run: |
         python3 fetcher.py ${{matrix.node}}
         mkdir -pv $( julia -e "print(Base.active_project())" | sed 's/\/Project.toml//' )
-        cp -v Project.toml $(julia -e "print(Base.active_project())")
+        if [ -f Project.toml ]; then cp -v Project.toml $(julia -e "print(Base.active_project()[1:end-12])"); fi
+        if [ -f Manifest.toml ]; then cp -v Manifest.toml $(julia -e "print(Base.active_project()[1:end-12])"); fi
     - name: "Install julia pre-requisites"
       run: |
         julia -e '
