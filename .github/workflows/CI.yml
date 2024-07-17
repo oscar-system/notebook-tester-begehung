@@ -3,8 +3,6 @@ name: Run tests
 on:
   push:
   workflow_dispatch:
-  schedule:
-  - cron: '0 2 * * *'
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}-${{ github.ref != 'refs/heads/master' || github.run_number }}
